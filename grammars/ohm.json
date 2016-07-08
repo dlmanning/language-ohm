@@ -1,0 +1,162 @@
+{
+  "scopeName": "source.ohm",
+  "name": "Ohm",
+  "fileTypes": [
+    "ohm"
+  ],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#grammar" }
+  ],
+  "repository": {
+    "grammar": {
+      "patterns": [
+        { "include": "#derivedGrammar" },
+        { "include": "#basicGrammar" }
+      ]
+    },
+    "basicGrammar": {
+      "begin": "^([a-zA-Z_]\\w*)[\\s\\w<:]+({)",
+      "beginCaptures": {
+        "1": { "name": "entity.name.type" },
+        "2": { "name": "punctuation" }
+      },
+      "patterns": [
+        { "include": "#rule" },
+        { "include": "#comments" },
+        { "include": "#generic" }
+      ],
+      "end": "}"
+    },
+    "derivedGrammar": {
+      "begin": "^([a-zA-Z_]\\w*)\\s+(<:)\\s+([a-zA-Z_]\\w*)\\s+({)",
+      "beginCaptures": {
+        "1": { "name": "entity.name.type" },
+        "2": { "name": "punctuation" },
+        "3": { "name": "entity.other.inherited-class" },
+        "4": { "name": "punctuation" }
+      },
+      "patterns": [
+        { "include": "#rule" },
+        { "include": "#comments" },
+        { "include": "#generic" }
+      ],
+      "end": "}"
+    },
+    "rule": {
+      "begin": "^\\s*([a-zA-Z_]\\w*)",
+      "beginCaptures": {
+        "1": { "name": "entity.name.function" }
+      },
+      "patterns": [
+        { "include": "#formals" },
+        { "include": "#ruleDesc" }
+      ],
+      "end": "([:\\+]?=)",
+      "endCaptures": {
+        "1": { "name": "punctuation" }
+      }
+    },
+    "formals": {
+      "begin": "(<)",
+      "beginCaptures": { "1": { "name": "punctuation" } },
+      "patterns": [
+        { "match": "[a-zA-Z_]\\w*", "name": "variable.parameter" },
+        { "match": ",", "name": "punctuation" }
+      ],
+      "end": "(>)",
+      "endCaptures": { "1": { "name": "punctuation" } }
+    },
+    "ruleDesc": {
+      "begin": "(\\()",
+      "beginCaptures": { "1": { "name": "punctuation" } },
+      "name": "comment",
+      "end": "(\\))",
+      "endCaptures": { "1": { "name": "punctuation" } }
+    },
+    "generic": {
+      "patterns": [
+        { "include": "#caseName" },
+        { "include": "#comments" },
+        { "include": "#punctuation" },
+        { "include": "#operators" },
+        { "include": "#built-ins" },
+        { "include": "#terminals" }
+      ]
+    },
+    "caseName": {
+      "match": "(--)\\s+([a-zA-Z_]\\w*)",
+      "captures": {
+        "1": { "name": "punctuation" },
+        "2": { "name": "entity.name.tag" }
+      }
+    },
+    "operators": {
+      "name": "keyword.operator",
+      "match": "=|\\||<:|:=|\\+=|\\*|\\+|\\?|~|\\.\\."
+    },
+    "punctuation": {
+      "name": "keyword.operator",
+      "match": "<|>|,|--"
+    },
+    "built-ins": {
+      "name": "support.class",
+      "match": "\\b(?:any|alnum|end|digit|hexDigit|letter|space|spaces|lower|upper|unicodeLtmo)\\b"
+    },
+    "terminals": {
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin"
+        }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end"
+        }
+      },
+      "name": "string.quoted.double",
+      "patterns": [
+        {
+          "match": "\\\\(x\\h{2}|[0-2][0-7]{0,2}|3[0-6][0-7]|37[0-7]?|[4-7][0-7]?|.)",
+          "name": "constant.character.escape"
+        },
+        {
+          "match": "[^\"]*[^\\n\\r\"\\\\]$",
+          "name": "invalid.illegal.string"
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "begin": "/\\*",
+          "end": "\\*/",
+          "name": "comment.block"
+        },
+        {
+          "begin": "(^[ \\t]+)?(?=//)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading"
+            }
+          },
+          "end": "(?!\\G)",
+          "patterns": [
+            {
+              "begin": "//",
+              "beginCaptures": {
+                "0": {
+                  "name": "comment.line"
+                }
+              },
+              "end": "\\n",
+              "name": "comment.line.double-slash"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
